@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Define your DigitalOcean API token
+DO_API_TOKEN="dop_v1_token"
+
+# Define the droplet IDs you want to snapshot
+DROPLET_IDS=("370953145" "367015392" "367015323")  # Replace with your actual droplet IDs
+
+# Define API endpoint for droplets
+DROPLETS_ENDPOINT="https://api.digitalocean.com/v2/droplets"
+
+# Loop over each droplet ID and create a snapshot
+for DROPLET_ID in "${DROPLET_IDS[@]}"; do
+  echo "Creating snapshot for droplet ID: $DROPLET_ID"
+  curl -X POST -H "Authorization: Bearer $DO_API_TOKEN" -H "Content-Type: application/json" \
+      -d '{"type":"snapshot","name":"droplet-snapshot-'$(date +"%Y%m%d%H%M%S")'"}' \
+      "$DROPLETS_ENDPOINT/$DROPLET_ID/actions"
+done
+
+echo "Snapshotting process started for droplet IDs: ${DROPLET_IDS[*]}."
